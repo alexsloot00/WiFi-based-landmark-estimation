@@ -11,4 +11,4 @@ This repository contains the following:
 - Created figures 
 
 ## Requirements
-- The Matlab files for the WSR toolbox must be run on a Linux system for the .mexa64 extension to function.
+- The Matlab files for the WSR toolbox must be run on a Linux system for the .mexa64 file to work.
