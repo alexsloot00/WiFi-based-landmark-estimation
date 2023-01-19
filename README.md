@@ -9,3 +9,6 @@ This repository contains the following:
 - Experimental data collected and parsed using the WSR toolbox
 - Estimation results using the WSR toolbox and novel range-only method
 - Created figures 
+
+## Requirements
+- The Matlab files for the WSR toolbox must be run on a Linux system for the .mexa64 extension to function.
