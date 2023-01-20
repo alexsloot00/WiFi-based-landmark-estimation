@@ -1,170 +1,119 @@
-clear; 
-clc;
-close all;
+%% Range-only landmark estimation
+% (2023) Original code: Matteo Marcantoni - DTPA - University of Groningen
+% (2023) Modified by:   Alex Sloot - DTPA - University of Groningen
+clear; clc; close all;
 
-%%
-rng(1)
+%% Simulation variables
+rng(1)                  % set rng seed
+sim_time = 1e4;         % simulation time
+time_step = 1e-1;       % sampling time 
+k = 4*1e1;              % correction gain
+R_rot = [0, 1; -1, 0];  % rotation matrix
+u_mag = 1e-2;           % magnitude of input   
+ui = [-1; -1];          % unit vector of input direction 
+u0 = u_mag*ui;          % movement input
+p0 = [0; 0];            % initial position
+dim = length(p0);       % number of dimensions
+ang_err0 = -pi;         % initial angle error 
+l_rad = 15;             % distance to landmark
+l_ang = deg2rad(45);    % angle between origin and landmark
+l_star = l_rad*[cos(l_ang); sin(l_ang)];    % true landmark position
+z_true0 = l_star - p0;                      % true landmark-robot vector
+theta_true0 = atan2(z_true0(2),z_true0(1)); % true angle robot to landmark
 
-%simulation time
-sim_time = 1e4;
-
-%Correction gain
-k = 4*1e1;
-
-%sampling time 
-T = 1e-1;
-%magnitude of input 
-u_mag = 1e-2;
-
-% initial position
-p0 = [0;
-    0];
-
-%true position of the landmark
-l_rad = 15; %15
-l_ang = deg2rad(45);
-l_star = l_rad*[cos(l_ang); 
-    sin(l_ang)];   
-
-%true relative position vector
-z_true0 = l_star - p0;
-theta_true0 = atan2(z_true0(2),z_true0(1));
-
-% Initial angle estimation theta(0)
-init_ang_err = deg2rad(-180); % In degrees
-theta_est0 = l_ang + init_ang_err; %-pi+2*pi*rand(1);
-theta_est0 = angle_adjustment(theta_est0); 
-
-% Initial measurement
-y0 = norm(z_true0);
-
-% Initial estimated landmark position
-z_est0 = y0*[cos(theta_est0);
-    sin(theta_est0)];
-l_est0 = z_est0 + p0;
-
-% Initial unit vector of relative position z_est0 (v0)
-v0 = z_est0/norm(z_est0);
-
-% Initial orthogonal vector to v0 (w0)
-R_rot = [0, 1; %rotation matrix
-    -1, 0];
-w0 = R_rot*v0;
-
-% Initial unit vector of input direction (ui)
-ui = [-1;
-    -1];
-
-% Initial input
-u0 = u_mag*ui;
+%% Initial estimates
+theta_est0 = l_ang + ang_err0;              % angle estimate
+theta_est0 = angle_adjustment(theta_est0);  % angle estimate [-pi, pi]
+y0 = norm(z_true0);                         % distance measurement
+z_est0 = y0*[cos(theta_est0); sin(theta_est0)]; % landmark-robot vector
+l_est0 = z_est0 + p0;                       % landmark estimation
+v0 = z_est0/norm(z_est0);                   % unit vector of z_est0 
+w0 = R_rot*v0;                              % orthogonal vector to v0 
 
 %% Inizialize vectors
-% agent positions
+p = zeros(dim,sim_time);% agent positions
+z_est = p;              % estimated relative distance
+z_true = p;             % true relative distance
+l_est = p;              % estimated landmark position
+v = p;                  % unit vector pointing like z_est
+w = p;                  % unit vector orthogonal to v
+u = p;                  % input of the agent
+e_l = p;                % error on landmark position
+e_z = p;                % error on relative position
+y = zeros(1,sim_time);  % true measurement
+y_pred = y;             % predicted measurement (n-1)  
+e_y = y;                % measurement error (UNUSED)
+theta_true = y;         % true angle
+theta_est = y;          % estimated angle
+theta_update = y;       % updates (n-1)
+theta_helper = y;       % variable for computation
+theta_old = y;          % variable for comparing
+e_theta = y;            % angle error
 
-p = zeros(length(p0), sim_time);
-% relative vectors
-z_est = p; %estimated relative distance
-z_true = p; %true relative distance
-l_est = p; %estimated landmark position
-
-v = p; %unit vector pointing like z_est
-w = p; %unit vector hortogonal to v
-
-u = p; % Input of the agent
-
-e_l = p;    %error on landmark position
-e_z = p; %error on relative position
-
-% measures
-y = zeros(1,sim_time); %true measure
-y_pred = y; %predicted measure (n-1)  
-
-e_y = y; %measures error
-
-% angles
-theta_true = zeros(1,sim_time); %true angle
-theta_est = theta_true; %estimated angle
-
-% update and landmark position
-theta_update = theta_true; %updates (n-1)
-
-theta_helper = theta_true; %variable for calculation
-theta_old = theta_true; %variable for checking
-
-e_theta = theta_true; %angle error
-
-% Initial conditions
-p(:,1) = p0;
-
-z_est(:,1) = z_est0;
-z_true(:,1) = z_true0; 
-l_est(:,1) = l_est0;
-
-v(:,1) = v0;
-w(:,1) = w0;
-
-u(:,1) = u0;
-
-e_l(:,1) = l_star - l_est0;
-e_z(:,1) = z_true0 - z_est0;
-
-y(1) = y0;
-y_pred(1) = y0;
-
-e_y(1) = 0;
-
-theta_true(1) = theta_true0; 
-theta_est(1) = theta_est0;
-
-theta_update(1) = e_y(1);
-
-theta_helper(1) = theta_est0;
-theta_old(1) = theta_est0;
-
-e_theta(1) = theta_true0 - theta_est0;
+%% Insert initial conditions
+p(:,1) = p0;            % position
+z_est(:,1) = z_est0;    % estimated landmark-robot vector 
+z_true(:,1) = z_true0;  % true landmark-robot vector
+l_est(:,1) = l_est0;    % estimated landmark
+v(:,1) = v0;            % unit vector of z_est
+w(:,1) = w0;            % orthogonal vector to v
+u(:,1) = u0;            % movement input
+y(1) = y0;              % true distance to landmark
+y_pred(1) = y0;         % predicted distance to landmark
+theta_true(1) = theta_true0;    % true angle
+theta_est(1) = theta_est0;      % estimated angle
+theta_update(1) = 0;            % angle update value
+theta_helper(1) = theta_est0;   % variable for computation
+theta_old(1) = theta_est0;      % variable fr comparing
+e_l(:,1) = l_star - l_est0;     % landmark error
+e_z(:,1) = z_true0 - z_est0;    % landmark-robot vector error
+e_y(1) = theta_update(1);       % distance to landmark error (UNUSED)
+e_theta(1) = theta_true0 - theta_est0; % angle error
 
 %% Simulate the evolution
 for i=2:sim_time
     % agent is moving orthogonally to estimated landmark 
-    p(:,i) = p(:,i-1)+T*u(:,i-1);
+    p(:,i) = p(:,i-1) + time_step*u(:,i-1);
 
-    %relative position vectors evolving accordingly
+    % relative position vectors evolving accordingly
     z_true(:,i) = l_star - p(:,i);
     theta_true(i) = atan2(z_true(2,i),z_true(1,i));
     z_est(:,i) = l_est(:,i-1) - p(:,i);
 
-    %prediction of measurement 
+    % prediction of measurement 
     y_pred(i) = norm(z_est(:,i));
 
-    %measurement
+    % measurement
     y(i) = norm(z_true(:,i)); 
 
-    %difference between prediction and measure
+    % difference between prediction and measure
     theta_update(i) = (y(i)^2 - y_pred(i)^2); 
 
-    theta_est(i) = theta_est(i-1) + T*u(:,i-1)'*w(:,i-1) + k*sign(u(:,i-1)'*w(:,i-1))*theta_update(i);
+    % update anle estimation
+    theta_est(i) = theta_est(i-1) + time_step*u(:,i-1)'*w(:,i-1) + ...
+                    k*sign(u(:,i-1)'*w(:,i-1))*theta_update(i);
     theta_est(i) = angle_adjustment(theta_est(i));
     
-    %relative position correction
+    % relative position correction
     z_est(:,i) = y(i)*[cos(theta_est(i)); sin(theta_est(i))];
-    %landamrk correction
+    
+    % landmark correction
     l_est(:,i) = z_est(:,i) + p(:,i);
     
-    %unit vector for next movement
+    % unit vector for next movement
     v(:,i) = z_est(:,i)/norm(z_est(:,i));
     w(:,i) = R_rot*v(:,i);
 
-    %next input
+    % next input
     u(:,i) = u0;
 
-    %errors
+    % errors
     e_l(:,i) = l_star - l_est(:,i);
     e_z(:,i) = z_true(:,i) - z_est(:,i);
     e_y(i) = theta_update(i);
     e_theta(i) = theta_true(i) - theta_est(i);
 end
-%% debugging
-
+%% Debug plot
 figure;
 plot(theta_true,'DisplayName','\theta_{true}(t)')
 hold on; 
@@ -174,27 +123,9 @@ title('Angles over time')
 xlabel('angle [rad]');
 ylabel('t [s]');
 legend; hold off;
-% 
-% figure;
-% plot(z_true(1,:),'DisplayName','z^x_{true}(t)')
-% hold on; 
-% plot(z_est(1,:),'DisplayName','z^x_{est}(t)')
-% title('x component relative position vectors over time')
-% xlabel('x [m]');
-% ylabel('t [s]');
-% legend; hold off;
-% 
-% figure;
-% plot(z_true(2,:),'DisplayName','z^y_{true}(t)')
-% hold on; 
-% plot(z_est(2,:),'DisplayName','z^y_{est}(t)')
-% title('y component of relative position vectors over time')
-% xlabel('y [m]');
-% ylabel('t [s]');
-% legend; hold off;
 
-%%
-%plot of true landmark position, estimated landmark positions and agent positions over time
+%% Plots
+% positions of true- and estimated landmark and robot over time
 figure;
 p(1) = plot(p(1,:),p(2,:),'r','DisplayName','p(t)'); hold on;
 p(2) = plot(l_est(1,:),l_est(2,:),'bo','DisplayName','l_{est}'); hold on;
@@ -205,7 +136,7 @@ ylabel('y [m]');
 axis equal;
 legend(p(1:3)); hold off;
 
-%plot of errors on estimated landmark position over time
+% errors on estimated landmark position over time
 figure;
 e(1) = plot(e_l(1,:),'b-','DisplayName','e^x_{l}(t)'); hold on;
 e(2) = plot(e_l(2,:),'r-','DisplayName','e^y_{l}(t)'); hold on;
@@ -214,7 +145,7 @@ xlabel('time [s]');
 ylabel('error [m]');
 legend(e(1:2)); hold off;
 
-%plot of errors on estimated angle over time
+% errors on estimated angle over time
 figure;
 plot(e_theta,'r-','DisplayName','e_{\theta}(t)'); hold on;
 title('Evolution of e_{\theta}(t) over time')
@@ -222,26 +153,25 @@ xlabel('time [s]');
 ylabel('error [rad]');
 legend; hold off;
 
-e_deg = rad2deg(e_theta);
-%plot of errors on estimated angle over time
+% errors on estimated angle over time
 figure;
-plot(e_deg,'r-','DisplayName','e_{\theta}(t)'); hold on;
+plot(rad2deg(e_theta),'r-','DisplayName','e_{\theta}(t)'); hold on;
 title('Evolution of e_{\theta}(t) over time')
 xlabel('time [s]');
 ylabel('error [deg]');
 legend; hold off;
 
-%%
-%Kerstin plots
+%% Kerstin plots
 xLdist = bsxfun(@minus,l_est,l_star);
 xLdist = arrayfun(@(j)norm(xLdist(:,j)),1:size(xLdist,2));
 
-f5 = figure(5);clf(f5);set(f5,'units','centimeters', 'color', 'white','position',[0 1 20 15],'PaperPositionMode','auto');
+f5 = figure(5); clf(f5);
+set(f5,'units','centimeters', 'color', 'white','position',[0 1 20 15],'PaperPositionMode','auto');
 tiledlayout(2,1);
-nexttile;hold on;grid;
+nexttile; hold on; grid;
 title('\theta angle over trajectory');
-plot(theta_true);plot(theta_est);%ylim([0,pi/2]);
-nexttile;hold on;grid;
+plot(theta_true); plot(theta_est); 
+nexttile; hold on; grid;
 title('distance of l^* versus l_{est} over trajectory');
 plot(xLdist,'k');
 set(gca, 'YScale', 'log');
