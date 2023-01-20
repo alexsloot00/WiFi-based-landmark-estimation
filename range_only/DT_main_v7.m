@@ -17,11 +17,11 @@ dim = length(p0);       % number of dimensions
 ang_err0 = -pi;         % initial angle error 
 l_rad = 15;             % distance to landmark
 l_ang = deg2rad(45);    % angle between origin and landmark
+
+%% Initial estimates
 l_star = l_rad*[cos(l_ang); sin(l_ang)];    % true landmark position
 z_true0 = l_star - p0;                      % true landmark-robot vector
 theta_true0 = atan2(z_true0(2),z_true0(1)); % true angle robot to landmark
-
-%% Initial estimates
 theta_est0 = l_ang + ang_err0;              % angle estimate
 theta_est0 = angle_adjustment(theta_est0);  % angle estimate [-pi, pi]
 y0 = norm(z_true0);                         % distance measurement
@@ -161,9 +161,8 @@ xlabel('time [s]');
 ylabel('error [deg]');
 legend; hold off;
 
-%% Kerstin plots
-xLdist = bsxfun(@minus,l_est,l_star);
-xLdist = arrayfun(@(j)norm(xLdist(:,j)),1:size(xLdist,2));
+% the angle and distance between estimated and true landmark over time
+xLdist = arrayfun(@(j) norm(e_l(:,j)), 1:sim_time);
 
 f5 = figure(5); clf(f5);
 set(f5,'units','centimeters', 'color', 'white','position',[0 1 20 15],'PaperPositionMode','auto');
