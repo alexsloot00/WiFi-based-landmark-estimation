@@ -1,0 +1,22 @@
+{
+    "workbench.colorTheme": "Default Dark+",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.python",
+        "editor.formatOnSave": true,
+        "editor.formatOnType": true
+    },
+    "cmake.configureOnOpen": true,
+    "workbench.startupEditor": "none",
+    "settingsSync.ignoredSettings": [
+        "-python.formatting.blackPath"
+    ],
+    "python.formatting.provider": "black",
+    "editor.formatOnSave": true,
+    "editor.stickyScroll.enabled": true,
+    "explorer.confirmDelete": false,
+    "explorer.confirmDragAndDrop": false,
+    "git.enableSmartCommit": true,
+    "git.confirmSync": false,
+    "workbench.iconTheme": "vscode-icons",
+    "git.autofetch": true
+}
