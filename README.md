@@ -1,14 +1,15 @@
-# Research-Project
-All files for my research project concerning WiFi-based localization
+# WiFi based landmark etimation
+A quick primer on WiFI based landmark estimation shows two possible approaches exist: using range or bearing information. For both approaches this repository contains options in simulation (MatLab and Gazebo), real-world control based on a Nexus 4WD Mecanum wheel robot.  
 
 ## Content
-This repository contains the following:
-- Matlab files for the novel range-only localization method
-- Matlab files for the [Wireless Sensing for Robotics (WSR) toolbox](https://github.com/Harvard-REACT/WSR-Toolbox.git)  
-- A Matlab simulation framework to run both methods for any trajectory of the receiver and stationary transmitter.
-- Experimental data collected and parsed using the WSR toolbox
-- Estimation results using the WSR toolbox and novel range-only method
-- Created figures 
+[The WSR toolbox](https://github.com/Harvard-REACT/WSR-Toolbox) created by Hardvard-REACT Lab contains an estimation technique based on bearing informatin using only one WiFi antenna per device.
+This repository adds to this work in the form of a Matlab version. This is a simulated environment capable of generating and finding the position of a transmitter using the WSR toolbox principles.
+The novel [range-only estimation]() technique is under development by the DTPA Lab in Groningen. A simulation framework is provided in Matlab. Furthermore, a simulated environment created using python with ROS can be used to test this approach in the real-world using the Nexus 4WD Mecanum wheel robot. This repository also allows testing the range-only estimation approach in simulation. Here Gazebo is used in combination with Python and ROS.
+Lastly, figures are provided.
+The corresponding background information and results can be found in [this paper]().
 
-## Requirements
-- The Matlab files for the WSR toolbox must be run on a Linux system for the .mexa64 file to work.
+### Requirements
+A linux based system is needed. All files in the repository were written and tested using Ubuntu 20.04.5 LTS. This affects
+- the Matlab files for the WSR approach, because of the _.mexa64_ file
+- the visualization of the C++ WSR toolbox
+- the real-world control and simulations using python for the range-only approach
