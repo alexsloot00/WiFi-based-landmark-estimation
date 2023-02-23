@@ -15,7 +15,7 @@ A linux based system is needed. All files in the repository were written and tes
 - the real-world control and simulations using python for the range-only approach
 
 ### Python
-To control either the real-world or run a simulation, the following script and possible inputs can be used.
+To control either the real-world or run a simulation, the following script and possible inputs can be used. If no inputs are provided the default value will be used.
 ```
 FLAGS:
   simulation: bool  | default = True          | run a simulation or control a real-world Nexus 4WD
@@ -29,7 +29,7 @@ python3 main.py -simulation True -name nexus_car -port /dev/ttyUSB0
 ```
 Option 2: using rosrun
 ```
-rosrun main.py 
+rosrun main.py -simulation True -name nexus_car -port /dev/ttyUSB0
 ```
 
 ### Matlab
