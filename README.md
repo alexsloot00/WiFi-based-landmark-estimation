@@ -18,9 +18,9 @@ A linux based system is needed. All files in the repository were written and tes
 To control either the real-world or run a simulation, the following script and possible inputs can be used.
 ```
 FLAGS:
-  simulation: bool  | default = True          | choose to run a simulation or control a real-world Nexus 4WD
+  simulation: bool  | default = True          | run a simulation or control a real-world Nexus 4WD
   name: str         | default = nexus_car     | the name of the robot as seen in Gazebo
-  port: str         | default = /dev/ttyUSB0  | the name of the USB port connected to the real-world Nexus 4WD
+  port: str         | default = /dev/ttyUSB0  | USB port connected to the real-world Nexus 4WD
 ```
 Option 1: directly invoking python from the scripts directory
 ```
@@ -31,6 +31,9 @@ Option 2: using rosrun
 ```
 rosrun main.py 
 ```
+
+### Matlab
+The files concerning the range-only approach can include several different trajectories, e.g. straight, curved and movement orthogonal to the estimated landmark position. To run the WSR toolbox, the main.m and main_csv.m can be run. Where main.m uses self-chosen movement over a given time and main_csv.m uses a predefined movement trajectory and can use real-world collectde CSI data as well. Otherwise, the WiFi signal will be simulated according to the [WSR toolbox paper](https://journals.sagepub.com/doi/full/10.1177/02783649221097989).
 
 ### Nexus 4WD robot
 As mentioned, the robot used is the Nexus 4 wheel drive Mecanum wheel robot. This robot can move omnidirectional and consists of a [base](https://www.nexusrobot.com/product/4wd-mecanum-wheel-mobile-arduino-robotics-car-10011.html) with 12V DC motors powered by an Arduino. Mounted on the base of the robot is a UP squared board powered by a bettery, with a DC-to-DC voltage converter in between. For simulation, the same robot is used. Movement is based on forces acting on the base of the robot, and together with the model for the robot were modified from [this repository](https://github.com/RBinsonB/nexus_4wd_mecanum_simulator).
