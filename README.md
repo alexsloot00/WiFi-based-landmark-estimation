@@ -18,9 +18,9 @@ A linux based system is needed. All files in the repository were written and tes
 To control either the real-world or run a simulation, the following script and possible inputs can be used. If no inputs are provided the default value will be used.
 ```
 FLAGS:
-  simulation: bool  | default = True          | run a simulation or control a real-world Nexus 4WD
-  name: str         | default = nexus_car     | the name of the robot as seen in Gazebo
-  port: str         | default = /dev/ttyUSB0  | USB port connected to the real-world Nexus 4WD
+  simulation: bool | default = True         | run a simulation or control a real-world Nexus 4WD
+  name: str        | default = nexus_car    | the name of the robot as seen in Gazebo
+  port: str        | default = /dev/ttyUSB0 | USB port connected to the real-world Nexus 4WD
 ```
 Option 1: directly invoking python from the scripts directory
 ```
