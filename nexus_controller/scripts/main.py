@@ -1,18 +1,48 @@
 #!/usr/bin/env python3
-import sys
+"""
+Author: Alex Sloot
+University of Groningen
+Last modified: 23-03-2023
+"""
+
+import sys, time, argparse
 from distance_only_estimator import DistanceOnlyEstimator
 from landmark import Landmark
 from create_nexus_car import create_a_nexus_car
 from terminal_functions import start_roscore
-import time
 
 
 def main() -> None:
     """Run the Nexus robot landmark localization."""
+    # parsing optional arguments from shell
+    parser = argparse.ArgumentParser(description="Add optional parameters")
+    parser.add_argument(
+        "-simulation",
+        "--simulation",
+        help="choose: True/False, i.e. -simulation False",
+        required=False,
+        default=True,
+    )
+    parser.add_argument(
+        "-port",
+        "--port",
+        help="choose: a port, i.e. -port /dev/ttyUSB0",
+        required=False,
+        default="/dev/ttyUSB0",
+    )
+    parser.add_argument(
+        "-name",
+        "--name",
+        help="choose: a name, i.e. -name  nexus_car",
+        required=False,
+        default="nexus_car",
+    )
 
-    simulation = True
-    port = "/dev/ttyUSB0"
-    name = "nexus_car"
+    # parse optional arguments
+    argument = parser.parse_args()
+    simulation = argument.simulation
+    port = argument.port
+    name = argument.name
 
     # start a rosmaster
     start_roscore()

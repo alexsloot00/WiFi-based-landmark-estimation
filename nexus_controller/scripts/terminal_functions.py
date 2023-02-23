@@ -1,14 +1,20 @@
 #!/usr/bin/env python3
-
+"""
+Author: Alex Sloot
+University of Groningen
+Last modified: 23-03-2023
+"""
 
 import subprocess
 import time
+import rospy
 
 
 def start_roscore() -> None:
-    """Starts a roscore in a new terminal."""
-    subprocess.Popen(["gnome-terminal", "--", "roscore"])
-    time.sleep(3)
+    """If no roscore is running, start a roscore in a new terminal."""
+    if not rospy.core.is_initialized():
+        subprocess.Popen(["gnome-terminal", "--", "roscore"])
+        time.sleep(3)
 
 
 def start_gazebo() -> None:

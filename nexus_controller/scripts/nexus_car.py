@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""
+Author: Alex Sloot
+University of Groningen
+Last modified: 23-03-2023
+"""
 
 import sys, time, traceback, serial, rospy
 from typing import List
@@ -62,7 +67,7 @@ class NexusCar:
     def init_simulation(
         self,
         model_name: str = "nexus_car",
-        model_path: str = "/home/alex/catkin_ws/src/nexus_controller/nexus_robot.sdf",
+        model_path: str = "/home/alex/catkin_ws/src/nexus_controller/simulation_models/nexus_robot.sdf",
     ) -> None:
         """Initialize simulation models."""
         self.model_name = model_name
