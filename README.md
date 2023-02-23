@@ -1,4 +1,4 @@
-# WiFi based landmark etimation
+# WiFi based landmark estimation
 A quick primer on WiFI based landmark estimation shows two possible approaches exist: using range or bearing information. For both approaches this repository contains options in simulation (MatLab and Gazebo), real-world control based on a Nexus 4WD Mecanum wheel robot.  
 
 ## Content
