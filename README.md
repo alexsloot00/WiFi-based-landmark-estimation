@@ -13,3 +13,24 @@ A linux based system is needed. All files in the repository were written and tes
 - the Matlab files for the WSR approach, because of the _.mexa64_ file
 - the visualization of the C++ WSR toolbox
 - the real-world control and simulations using python for the range-only approach
+
+### Python
+To control either the real-world or run a simulation, the following script and possible inputs can be used.
+```
+FLAGS:
+  simulation: bool  | default = True          | choose to run a simulation or control a real-world Nexus 4WD
+  name: str         | default = nexus_car     | the name of the robot as seen in Gazebo
+  port: str         | default = /dev/ttyUSB0  | the name of the USB port connected to the real-world Nexus 4WD
+```
+Option 1: directly invoking python from the scripts directory
+```
+cd ~/catkin_ws/src/nexus_controller/
+python3 main.py -simulation True -name nexus_car -port /dev/ttyUSB0
+```
+Option 2: using rosrun
+```
+rosrun main.py 
+```
+
+### Nexus 4WD robot
+As mentioned, the robot used is the Nexus 4 wheel drive Mecanum wheel robot. This robot can move omnidirectional and consists of a [base](https://www.nexusrobot.com/product/4wd-mecanum-wheel-mobile-arduino-robotics-car-10011.html) with 12V DC motors powered by an Arduino. Mounted on the base of the robot is a UP squared board powered by a bettery, with a DC-to-DC voltage converter in between. For simulation, the same robot is used. Movement is based on forces acting on the base of the robot, and together with the model for the robot were modified from [this repository](https://github.com/RBinsonB/nexus_4wd_mecanum_simulator).
