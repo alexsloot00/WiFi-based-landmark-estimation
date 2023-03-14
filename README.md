@@ -15,21 +15,24 @@ A linux based system is needed. All files in the repository were written and tes
 - the real-world control and simulations using python for the range-only approach
 
 ### Python
-To control either the real-world or run a simulation, the following script and possible inputs can be used. If no inputs are provided the default value will be used.
+To control either the real-world or run a simulation, the following script and possible inputs can be used. If no inputs are provided the default value will be used. For movement, options include forward, backward right, left, and circle.
 ```
 FLAGS:
   simulation: bool | default = True         | run a simulation or control a real-world Nexus 4WD
   name: str        | default = nexus_car    | the name of the robot as seen in Gazebo
   port: str        | default = /dev/ttyUSB0 | USB port connected to the real-world Nexus 4WD
+  velmag: float    | default = 0.1          | velocity magnitude to be used
+  timestep: float  | default = 0.05         | the time step to be used
+  move: str        | default = circle       | movement of the robot, distance based on velmag
 ```
 Option 1: directly invoking python from the scripts directory
 ```
 cd ~/catkin_ws/src/nexus_controller/
-python3 main.py -simulation True -name nexus_car -port /dev/ttyUSB0
+python3 main.py -simulation True -name nexus_car -port /dev/ttyUSB0 -velmag 0.1 -timestep 0.05 -move circle
 ```
 Option 2: using rosrun
 ```
-rosrun main.py -simulation True -name nexus_car -port /dev/ttyUSB0
+rosrun main.py -simulation True -name nexus_car -port /dev/ttyUSB0 -velmag 0.1 -timestep 0.05 -move circle
 ```
 
 ### Matlab
