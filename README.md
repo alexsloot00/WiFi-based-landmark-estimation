@@ -21,8 +21,8 @@ FLAGS:
   simulation: bool | default = True         | run a simulation or control a real-world Nexus 4WD
   name: str        | default = nexus_car    | the name of the robot as seen in Gazebo
   port: str        | default = /dev/ttyUSB0 | USB port connected to the real-world Nexus 4WD
-  velmag: float    | default = 0.1          | velocity magnitude to be used
-  timestep: float  | default = 0.05         | the time step to be used
+  velmag: float    | default = 0.1          | magnitude of the velocity in meters/second
+  timestep: float  | default = 0.05         | the time step for executing movement and computations
   move: str        | default = circle       | movement of the robot, distance based on velmag
 ```
 Option 1: directly invoking python from the scripts directory
