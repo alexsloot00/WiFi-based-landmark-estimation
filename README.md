@@ -1,5 +1,5 @@
 # WiFi based landmark estimation
-A quick primer on WiFI based landmark estimation shows two possible approaches exist: using range or bearing information. For both approaches this repository contains options in simulation (MatLab and Gazebo), real-world control based on a Nexus 4WD Mecanum wheel robot.  
+A quick primer on WiFI based landmark estimation shows two possible approaches exist: using range or bearing information. For both approaches this repository contains one option in simulation (MatLab and Gazebo), and real-world control based on a Nexus 4WD Mecanum wheel robot.  
 
 ## Content
 [The WSR toolbox](https://github.com/Harvard-REACT/WSR-Toolbox) created by Hardvard-REACT Lab contains an estimation technique based on bearing informatin using only one WiFi antenna per device.
@@ -15,15 +15,16 @@ A linux based system is needed. All files in the repository were written and tes
 - the real-world control and simulations using python for the range-only approach
 
 ### Python
-To control either the real-world or run a simulation, the following script and possible inputs can be used. If no inputs are provided the default value will be used. For movement, options include forward, backward right, left, and circle.
+To control either the real-world or run a simulation, the following script and possible inputs can be used. If no inputs are provided the default value will be used. For movement, options include forward, backward right, left, and circle, these do not need to be invoked with "", the code will handle this. Additionally, when using the distance-only estimator, the chosen trajectory will be dynamically optimized based on the current position, instead of using the input.
 ```
 FLAGS:
-  simulation: bool | default = True         | run a simulation or control a real-world Nexus 4WD
-  name: str        | default = nexus_car    | the name of the robot as seen in Gazebo
-  port: str        | default = /dev/ttyUSB0 | USB port connected to the real-world Nexus 4WD
-  velmag: float    | default = 0.1          | magnitude of the velocity in meters/second
-  timestep: float  | default = 0.05         | the time step for executing movement and computations
-  move: str        | default = circle       | movement of the robot, distance based on velmag
+  simulation: bool | default = True           | run a simulation or control a real-world Nexus 4WD
+  estimator: str   | default = WSR            | choose the estimator to use (distance_only or WSR)
+  name: str        | default = "nexus_car"    | the name of the robot as seen in Gazebo
+  port: str        | default = "/dev/ttyUSB0" | USB port connected to the real-world Nexus 4WD
+  velmag: float    | default = 0.1            | magnitude of the velocity in meters/second
+  timestep: float  | default = 0.05           | the time step for executing movement and computations
+  move: str        | default = "circle"       | movement of the robot, distance based on velmag
 ```
 Option 1: directly invoking python from the scripts directory
 ```
