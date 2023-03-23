@@ -1,0 +1,157 @@
+#####################
+# WSR_Project Notes #
+##################### 
+
+### To run the main.py
+go to scripts folder in a terminal
+ - python3 main.py --d_type gt
+(python instead of python3 does not work)
+
+### full install to empty UP squared board:
+- plug in USB drive with Ubuntu 18.04.0
+- start pc, choose install Ubuntu
+- choose the kingston drive, not the UP squared memory
+- install the normal version (not minimal!)
+
+- plug in an ethernet cable (can also be done before starting)
+    if using nexus_24 internet, change IPV4 settings manually*
+- download git by   
+    sudo apt-get install git
+- now try downloading the WSR toolbox using the wiki GitHub
+note: download python3.8 NOT python3.7, so run:
+sudo apt install python3.8 python3.8-tk python3-pip python3.8-dev python3-gdbm cmake
+
+set python3.8 as default can also be done by
+sudo update-alternatives  --set python /usr/bin/python3.8
+but it works using the given command
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 2
+
+General note: if any print messages seem like something did not connect
+rerun the command, internet may be unstable.
+
+if some GLib error, or something like
+    `E: Problem executing scripts APT::Update::Post-Invoke-Success 'if /usr/bin/test -w /var/cache/app-info -a -e /usr/bin/appstreamcli; then appstreamcli refresh-cache > /dev/null; fi'
+    E: Sub-process returned an error code`
+do:
+    sudo chmod a+rwx /etc/apt/apt.conf.d/50appstream
+    sudo gedit use /etc/apt/apt.conf.d/50appstream
+    comment or delete last 3 lines in the file
+    sudo apt-get update
+    sudo apt-get upgrade
+    (https://unix.stackexchange.com/questions/464445/problem-with-appstreamcli-when-running-apt-update)
+
+Using sudo add-apt-repository ppa:deadsnakes/ppa on Ubuntu 18.04.0
+some apt packages are not loaded properly. 
+For instance, running 'ifconfig' may not work 
+
+if
+    ImportError: No module named apt_pkg.
+do:
+    $ cd /usr/lib/python3/dist-packages
+    $ sudo cp apt_pkg.cpython-36m-x86_64-linux-gnu.so apt_pkg.so
+    (https://stackoverflow.com/questions/13708180/python-dev-installation-error-importerror-no-module-named-apt-pkg/36232975#36232975)
+    (https://askubuntu.com/questions/480908/problem-with-update-manager-no-module-named-apt-pkg-in-ubuntu-13-10-having-i)
+if
+    ImportError: cannot import name '_gi' from 'gi' (/usr/lib/python3/dist-packages/gi/__init__.py)
+do:
+    sudo ln -s /usr/lib/python3/dist-packages/gi/_gi.cpython-{36m,37m}-x86_64-linux-gnu.so
+    (https://stackoverflow.com/questions/59389831/cannot-import-name-gi)
+
+For visualization if python3.7 was installed, easier to install python3.8
+- change python 3.8 to python3.8 in /scripts/*.sh, /src/test_csi_data.cpp 
+
+- install the following packages (in requirements.txt these seem commented out):
+    pip3 install --upgrade setuptools **
+    pip3 install numpy
+    pip3 install pandas
+    pip3 install matplotlib
+    pip3 install plotly 
+    pip3 install seaborn
+    (pip3 install transformations)
+
+Compiling and using Cpython modules
+- go to ~/WSR_Project/WSR-Toolbox-cpp/
+- running 'python3 setup.py build_ext --inplace'
+will give an error:
+    error: could not create 'scripts/libs/wsr_module.cpython-37m-x86_64-linux-gnu.so'
+    No such file or directory
+fix:
+    go to ~/WSR_Project/WSR-Toolbox-cpp/scripts
+    mkdir libs
+    again try to run 'python3 setup.py build_ext --inplace'
+extra fix if python has installed the libs package, the folder will not be found:
+    pip3 uninstall libs 
+
+- go to ~/WSR_Project/WSR-Toolbox-cpp/config
+- open main.py
+- change: 
+    '~/WSR_Project/WSR-Toolbox-cpp/config/config_3D_SAR_multi'
+    to:
+    '~/WSR_Project/WSR-Toolbox-cpp/config/config_3D_SAR'
+the other file does not exist
+
+fix 'Python Setup.py egg_info Failed with Error code 1':
+    pip3 install --upgrade setuptools
+    python3 -m pip install --upgrade pip 
+    (https://stackoverflow.com/questions/35991403/pip-install-unroll-python-setup-py-egg-info-failed-with-error-code-1)
+
+
+find the MAC adresses on the UP squared
+    (if needed install using) sudo apt install config
+    ifconfig
+    find wlp1s0 (or mon0 but this does not have 00-...-00 after the MAC adress)
+    unspec ..-..-..-..-..-..-00-00-00-00-00-00-00-00-00-00
+    copy ..-..-..-..-..-.., make it ..:..:..:..:..:.. 
+    place this in config_3D_SAR for the correct RX or TX 
+
+
+* manual IPV4 stuff:
+adress: 192.168.1.choose (not a number already used by other pc)
+netmask: 255.255.255.0
+gateway: 192.168.1.200
+DNS: 8.8.8.8
+
+** this may now give the following error when running 'pip3 install ...':
+    ' WARNING: pip is being invoked by an old script wrapper. 
+    This will fail in a future version of pip. 
+    Please see https://github.com/pypa/pip/issues/5599 for advice on 
+    fixing the underlying issue. '
+To avoid this problem: 
+    'python3 -m pip install <package_name>' 
+
+
+# old errors (not in main branch anymore)
+change the .bash script if statements in
+scripts/viz_data.sh
+the syntax is incorrect (spaces, quotes, = sign), correct is
+if [ "$3" = "3D" ]; then
+if [ "$4" = "matlab" ]; then
+
+home_dir = /home/alex/ (or just /~/)
+but if placed in /catkin_ws/src
+this needs to be added everywhere in
+(Json files, cpp files, python files)
+
+the .cpp file may not find the .ccp files in the /src folder
+add the following to C/C++ configurations in VS code 'include path'
+/home/alex/catkin_ws/src/WSR_Project/WSR-Toolbox-cpp/**
+
+libs folder does not exist in scripts, 
+create this folder then setup.py works
+create in libs folder a __init__.py file
+otherwise main.py cannot import
+
+pip3 install matlab, 
+pip3 install transformations
+pip3 install seaborn
+
+import problems with libs as folder name and a built-in package so
+pip3 uninstall libs 
+
+robot_trajectory.py had twice '[]libs' somewhere,
+the repository had '[]' without 'libs', unclear why this was here
+remove the word 'libs' it should not exist in this file
+
+not resolved:
+robot_trajectory.py still has 2 unknown variables
+i beleive this file is never run 
