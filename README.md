@@ -25,8 +25,8 @@ To simulate the WSR toolbox method, run the file `main.m`. Here, a predefined mo
 To control either the real-world or run a Gazebo simulation, the following script and associated inputs (flags) can be used. If no inputs are provided the default value will be used. For movement, options include forward, backward, right, left, and circle. None of the inputs need to be invoked with "", the code will handle this. Additionally, when using the distance-only estimator, the chosen trajectory will be dynamically optimized based on the current position, instead of using the inputted movement.
 ```
 FLAGS:
-  simulation: bool | default = True           | run a simulation or control a real-world Nexus 4WD
-  estimator: str   | default = WSR            | choose the estimator to use (distance_only or WSR)
+  simulation: bool | default = True           | simulate or control a real-world Nexus 4WD
+  estimator: str   | default = WSR            | choose distance-only (DO) or WSR estimator
   name: str        | default = "nexus_car"    | the name of the robot as seen in Gazebo
   port: str        | default = "/dev/ttyUSB0" | USB port connected to the real-world Nexus 4WD
   velmag: float    | default = 0.1            | magnitude of the velocity in meters/second
