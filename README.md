@@ -30,15 +30,18 @@ FLAGS:
 Option 1: directly invoking python from the scripts directory
 ```
 cd ~/catkin_ws/src/nexus_controller/
-python3 main.py -simulation True -name nexus_car -port /dev/ttyUSB0 -velmag 0.1 -timestep 0.05 -move circle
+python3 main.py 
+python3 main.py -simulation True -name nexus_car -port /dev/ttyUSB0 -velmag 0.1 -timestep 0.05 -move circle -runtime 10.0
 ```
 Option 2: using rosrun
 ```
-rosrun main.py -simulation True -name nexus_car -port /dev/ttyUSB0 -velmag 0.1 -timestep 0.05 -move circle
+rosrun nexus_controller main.py
+rosrun nexus_controller main.py -simulation True -name nexus_car -port /dev/ttyUSB0 -velmag 0.1 -timestep 0.05 -move circle -runtime 10.0
 ```
 
 ### Matlab
-The files concerning the range-only approach can include several different trajectories, e.g. straight, curved and movement orthogonal to the estimated landmark position. To run the WSR toolbox, the main.m and main_csv.m can be run. Where main.m uses self-chosen movement over a given time and main_csv.m uses a predefined movement trajectory and can use real-world collectde CSI data as well. Otherwise, the WiFi signal will be simulated according to the [WSR toolbox paper](https://journals.sagepub.com/doi/full/10.1177/02783649221097989).
+The files concerning the range-only approach include several different trajectories, e.g. straight, curved and movement orthogonal to the estimated landmark position. The type of movement is specified at the top of the file. The gain (gain>0) can be chosen by the user, however, if the gain does not satisfy the constraints the estimated landmark will not converge to the true position. 
+To simulate the WSR toolbox method, run the file `main.m`. Here, a predefined movement trajectory can be used or one can create a trajectory as a list of [x; y; z]. Additionally, the a JSON file containing CSI data can be used if the data corresponds the movement also obtained from the same experiment. If no CSI data is provided, the code will choose to use emulated CSI data using the formula from the [WSR toolbox paper](https://journals.sagepub.com/doi/full/10.1177/02783649221097989). Next to the CSI data and trajectory, the user can choose to creat a simple (2D computed) profile or create a 3D profile by setting the variable `simple` to 1 or 0, respectively. Lastly, the accuracy of the profile can be set by changing the resolution of the gammaList and betaList. However, note this method is computationally expensive, so beware.
 
 ### Nexus 4WD robot
 As mentioned, the robot used is the Nexus 4 wheel drive Mecanum wheel robot. This robot can move omnidirectional and consists of a [base](https://www.nexusrobot.com/product/4wd-mecanum-wheel-mobile-arduino-robotics-car-10011.html) with 12V DC motors powered by an Arduino. Mounted on the base of the robot is a UP squared board powered by a [XP power board](https://nl.mouser.com/ProductDetail/XP-Power/JCL3012S05?qs=w%2Fv1CP2dgqp6vrT05q%2FO7Q%3D%3D), which in turn is connected to a 5000mAh battery. The UP squared board is connected to an external SSD hard drive for booting Ubuntu (full) Desktop 18.04.0 and extra storage. An Intel 5300 NIC is connected to the UP squared board and screwed on using an extension from half size to full size.
