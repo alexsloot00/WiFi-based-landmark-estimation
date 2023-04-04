@@ -25,6 +25,7 @@ FLAGS:
   velmag: float    | default = 0.1            | magnitude of the velocity in meters/second
   timestep: float  | default = 0.05           | the time step for executing movement and computations
   move: str        | default = "circle"       | movement of the robot, distance based on velmag
+  runtime: float   | default = 10.0           | the time of runnning the program in seconds
 ```
 Option 1: directly invoking python from the scripts directory
 ```
