@@ -22,10 +22,10 @@ The files concerning the range-only approach include several different trajector
 To simulate the WSR toolbox method, run the file `main.m`. Here, a predefined movement trajectory can be used or a trajectory can be created in the form of a list of [x; y; z] coordinates. Additionally, a JSON file containing CSI data can be used if the data corresponding to the movement is also obtained from the same experiment. If no CSI data is provided, the code will choose to use emulated CSI data using the formula from the [WSR toolbox paper](https://journals.sagepub.com/doi/full/10.1177/02783649221097989). If CSI data is chosen the code will show compariosns between the given CSI data and the emulated data. Next to the CSI data and trajectory, the user can choose to creat a simple (2D computed) profile or create a 3D profile by setting the variable `simple` to 1 or 0, respectively. If no CSI data is given, using the 3D profile is recommended for better accuracy, the elevation angle can simply be ignored. Lastly, the resolution of the profile (default 360x180) can be set by changing the resolution of the gammaList and betaList. However, this method is computationally expensive, so beware.
 
 ### Python
-# Installation
+#### Installation
 This repository containts all the python files from [this repository](https://github.com/alexsloot00/nexus_controller), which has been used to directly commit to GitHub. Installation of this separate repository using the README.md ensures a correct installation of the python, ROS and catkin workspace.
 
-# Running the code
+#### Running the code
 To control either the real-world or run a Gazebo simulation, the following script and associated inputs (flags) can be used. If no inputs are provided the default value will be used. For movement, options include forward, backward, right, left, and circle. None of the inputs need to be invoked with "", the code will handle this. Additionally, when using the distance-only estimator, the chosen trajectory will be dynamically optimized based on the current position, instead of using the inputted movement.
 ```
 FLAGS:
