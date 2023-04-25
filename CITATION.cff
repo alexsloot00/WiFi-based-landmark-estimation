@@ -1,0 +1,32 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: WiFi based landmark estimation
+message: >-
+  Repository concerning my experimental and simulation study
+  of a WiFi-based localization framework
+type: software
+authors:
+  - given-names: Alex
+    family-names: Sloot
+    email: a.h.sloot@student.rug.nl
+    affiliation: University of Groningen
+repository-code: >-
+  https://github.com/alexsloot00/WiFi-based-landmark-estimation
+url: >-
+  https://github.com/alexsloot00/WiFi-based-landmark-estimation
+abstract: >-
+  A quick primer on WiFI based landmark estimation shows two
+  possible approaches exist: using range or bearing
+  information. For both approaches this repository contains
+  one option in simulation (MatLab and Gazebo), and
+  real-world control based on a Nexus 4WD Mecanum wheel
+  robot.
+keywords:
+  - Landmark
+  - Localization
+  - Simulation
+  - Robotics
+license: Apache-2.0
+date-released: '2023-04-25'
